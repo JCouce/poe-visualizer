@@ -1,31 +1,46 @@
 import express from 'express';
-import axios from 'axios';
+import { config } from '../config.js';
+
 const router = express.Router();
 
 router.get('/callback', async (req, res) => {
   const code = req.query.code;
 
+  if (!code) return res.status(400).send('Missing code');
+
+  const tokenUrl = 'https://www.pathofexile.com/oauth/token';
+
+  const params = new URLSearchParams({
+    client_id: config.clientId,
+    client_secret: config.clientSecret,
+    grant_type: 'authorization_code',
+    code,
+    redirect_uri: config.redirectUri,
+  });
+
   try {
-    const response = await axios.post('https://www.pathofexile.com/oauth/token', null, {
-      params: {
-        client_id: process.env.POE_CLIENT_ID,
-        client_secret: process.env.POE_CLIENT_SECRET,
-        grant_type: 'authorization_code',
-        code,
-        redirect_uri: process.env.POE_REDIRECT_URI,
-      },
+    const response = await fetch(tokenUrl, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
+      body: params,
     });
 
-    const { access_token } = response.data;
+    const data = await response.json();
 
-    // Puedes guardarlo en sesión o hacer la llamada directamente
-    res.redirect(`/characters?access_token=${access_token}`);
+    if (!response.ok) {
+      console.error('Token error:', data);
+      return res.status(500).send('Failed to get access token');
+    }
+
+    const access_token = data.access_token;
+
+    // Prueba de redirección con token
+    res.redirect(`/oauth/success?access_token=${access_token}`);
   } catch (err) {
     console.error(err);
-    res.status(500).send('OAuth error');
+    res.status(500).send('OAuth request failed');
   }
 });
 
