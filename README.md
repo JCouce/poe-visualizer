@@ -1,6 +1,6 @@
-# PathPatch Analyzer
+# POE Patch Analyzer
 
-**PathPatch Analyzer** is a developer tool for Path of Exile players who want to understand how patch changes impact their characters and builds over time.
+**POE Patch Analyzer** is a developer tool for Path of Exile players who want to understand how patch changes impact their characters and builds over time.
 
 This tool securely connects to a player’s Path of Exile account via OAuth and visualizes character data alongside historical patch notes. It is intended as an educational and analytical companion — not a game automation or enhancement utility.
 
@@ -39,8 +39,9 @@ It only uses the officially documented and approved public OAuth API available f
 1. Clone the repo:
 
 ```bash
-git clone https://github.com/JCouce/poe-visualizer.git
-cd poe-visualizer
+git clone https://github.com/JCouce/poe-patch-analyzer.git
+cd poe-patch-analyzer
+
 ```
 
 2. Create a .env file:
